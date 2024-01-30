@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    "target": "es2019", // Compile to a version of ECMAScript that matches your Node.js version's capabilities
+    "module": "commonjs", // Use CommonJS modules, which are native to Node.js
+    "lib": ["es2019"], // Include typings for ECMAScript features corresponding to the target
+    "outDir": "./dist", // Specify the output directory for compiled files
+    "rootDir": "./src", // Specify the root directory of input files
+    "strict": true, // Enable all strict type-checking options
+    "esModuleInterop": true, // Enable compatibility with Babel/TypeScript default import interoperability
+    "skipLibCheck": true, // Skip type checking for all declaration files (*.d.ts)
+    "forceConsistentCasingInFileNames": true, // Disallow inconsistently-cased references to the same file
+    "resolveJsonModule": true, // Allow importing of .json files
+    "moduleResolution": "node", // Use Node.js style module resolution
+    "noImplicitReturns": true, // Report error when not all code paths in function return a value
+    "noImplicitAny": true, // Raise error on expressions and declarations with an implied 'any' type
+    "noUnusedLocals": true, // Report errors on unused locals
+    "noUnusedParameters": true, // Report errors on unused parameters
+    "removeComments": true // Do not emit comments to output
+  },
+  "include": [
+    "src/**/*" // Include all files in the src folder
+  ],
+  "exclude": [
+    "node_modules", // Exclude the node_modules directory
+    "**/*.spec.ts" // Exclude test files
+  ]
+}
