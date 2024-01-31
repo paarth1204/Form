@@ -19,6 +19,7 @@ const Form: React.FC<FormProps> = ({
   const [age, setAge] = useState("");
   const [role, setRole] = useState("");
   const { successToast, errorToast } = useToasts();
+  const [ageError, setAgeError] = useState<string | null>(null);
 
   useEffect(() => {
     if (selectedUserData) {
@@ -36,6 +37,14 @@ const Form: React.FC<FormProps> = ({
 
   const handleClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
+
+    const parsedAge = parseInt(age, 10);
+    if (isNaN(parsedAge) || parsedAge < 18) {
+      setAgeError("Age should be 18 or older.");
+      return;
+    } else {
+      setAgeError(null);
+    }
 
     // Determine the API endpoint and HTTP method based on whether it's update or submit
     const endpoint = selectedUserData
@@ -113,10 +122,19 @@ const Form: React.FC<FormProps> = ({
               id="age"
               placeholder="Enter your age"
               value={age}
-              onChange={(e) => setAge(e.target.value)}
-              className="p-2 border border-gray-300 rounded-md w-full"
+              onChange={(e) => {
+                setAge(e.target.value);
+                setAgeError(null); // Clear age error when the user starts typing
+              }}
+              className={`p-2 border border-gray-300 rounded-md w-full ${
+                ageError ? "border-red-500" : "" // Add red border if there's an age error
+              }`}
             />
+            {ageError && (
+              <p className="text-red-500 text-sm mt-1">{ageError}</p>
+            )}
           </div>
+
           <div className="flex flex-col mb-4">
             <label htmlFor="role">
               <Typography variant="h6" className="mb-2">

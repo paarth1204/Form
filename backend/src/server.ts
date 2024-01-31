@@ -56,12 +56,55 @@ app.post("/submit", async (req: Request, res: Response) => {
         .json({ error: "Name, age, and role are required fields." });
     }
 
+    // Age validation
+    const parsedAge = parseInt(age, 10);
+    if (isNaN(parsedAge) || parsedAge < 18) {
+      return res.status(400).json({ error: "Age should be 18 or older." });
+    }
+
     // Save data to MongoDB
-    await db.collection("users").insertOne({ name, age, role });
+    await db.collection("users").insertOne({ name, age: parsedAge, role });
 
     return res.status(200).json({ message: "Data saved successfully." });
   } catch (error) {
     console.error("Error saving data to MongoDB:", error);
+    return res.status(500).json({ error: "Internal server error." });
+  }
+});
+
+app.put("/update/:id", async (req: Request, res: Response) => {
+  try {
+    const userId = req.params.id;
+    const { name, age, role } = req.body;
+
+    // Check if the required data is present
+    if (!name || !age || !role) {
+      return res
+        .status(400)
+        .json({ error: "Name, age, and role are required fields." });
+    }
+
+    // Age validation
+    const parsedAge = parseInt(age, 10);
+    if (isNaN(parsedAge) || parsedAge < 18) {
+      return res.status(400).json({ error: "Age should be 18 or older." });
+    }
+
+    // Update user data in MongoDB
+    const result = await db.collection("users").updateOne(
+      { _id: new ObjectId(userId) },
+      {
+        $set: { name, age: parsedAge, role },
+      }
+    );
+
+    if (result.matchedCount === 1) {
+      return res.status(200).json({ message: "User updated successfully." });
+    } else {
+      return res.status(404).json({ error: "User not found." });
+    }
+  } catch (error) {
+    console.error("Error updating user in MongoDB:", error);
     return res.status(500).json({ error: "Internal server error." });
   }
 });
@@ -94,37 +137,6 @@ app.delete("/delete/:id", async (req: Request, res: Response) => {
     }
   } catch (error) {
     console.error("Error deleting user from MongoDB:", error);
-    return res.status(500).json({ error: "Internal server error." });
-  }
-});
-
-app.put("/update/:id", async (req: Request, res: Response) => {
-  try {
-    const userId = req.params.id;
-    const { name, age, role } = req.body;
-
-    // Check if the required data is present
-    if (!name || !age || !role) {
-      return res
-        .status(400)
-        .json({ error: "Name, age, and role are required fields." });
-    }
-
-    // Update user data in MongoDB
-    const result = await db.collection("users").updateOne(
-      { _id: new ObjectId(userId) },
-      {
-        $set: { name, age: parseInt(age), role },
-      }
-    );
-
-    if (result.matchedCount === 1) {
-      return res.status(200).json({ message: "User updated successfully." });
-    } else {
-      return res.status(404).json({ error: "User not found." });
-    }
-  } catch (error) {
-    console.error("Error updating user in MongoDB:", error);
     return res.status(500).json({ error: "Internal server error." });
   }
 });
