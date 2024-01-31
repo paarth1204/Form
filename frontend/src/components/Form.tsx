@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { UserData } from "../App";
 import { Typography, Button } from "@mui/material";
 import { Close } from "@mui/icons-material"; // Import Close icon
+import { useToasts } from "../hooks/useToasts";
 
 interface FormProps {
   onFormSubmit: () => void;
@@ -17,6 +18,7 @@ const Form: React.FC<FormProps> = ({
   const [name, setName] = useState("");
   const [age, setAge] = useState("");
   const [role, setRole] = useState("");
+  const { successToast, errorToast } = useToasts();
 
   useEffect(() => {
     if (selectedUserData) {
@@ -51,10 +53,10 @@ const Form: React.FC<FormProps> = ({
       });
 
       if (response.ok) {
-        console.log(
+        successToast(
           selectedUserData
             ? "User updated successfully"
-            : "Form submitted successfully"
+            : "User Added successfully"
         );
         // Optionally, you can reset the form fields here
         setName("");
@@ -63,7 +65,7 @@ const Form: React.FC<FormProps> = ({
         onFormSubmit();
         onCancelUpdate(); // Reset update mode
       } else {
-        console.error(
+        errorToast(
           selectedUserData ? "Error updating user" : "Error submitting form"
         );
       }

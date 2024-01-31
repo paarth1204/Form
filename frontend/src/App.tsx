@@ -17,7 +17,7 @@ function App() {
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
   const [isUpdateMode, setIsUpdateMode] = useState(false);
   const [open, setOpen] = useState(false);
-  const { successToast } = useToasts();
+  const { successToast, errorToast } = useToasts();
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => {
@@ -50,11 +50,10 @@ function App() {
       });
 
       if (response.ok) {
-        console.log("User deleted successfully");
         successToast("User deleted successfully");
         fetchData();
       } else {
-        console.error("Error deleting user");
+        errorToast("Error deleting user");
       }
     } catch (error) {
       console.error("Error:", error);
