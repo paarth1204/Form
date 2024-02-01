@@ -17,6 +17,7 @@ function App() {
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
   const [isUpdateMode, setIsUpdateMode] = useState(false);
   const [open, setOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const { successToast, errorToast } = useToasts();
 
   const handleOpen = () => setOpen(true);
@@ -72,9 +73,20 @@ function App() {
     handleClose(); // Close the modal when canceling the update
   };
 
+  const handleSearchInputChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setSearchQuery(event.target.value);
+  };
+
+  // Filter users based on search query
+  const filteredUserData = userData.filter((user) =>
+    user.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <div className="bg-zinc-200 h-screen">
-      <Header />
+      <Header onSearchInputChange={handleSearchInputChange} />
       <Button onClick={handleOpen}>+ Add User</Button>
       <Modal open={open} onClose={handleClose}>
         <Box>
@@ -91,7 +103,7 @@ function App() {
       </Modal>
       <div>
         <ul className="list-none grid grid-cols-5 gap-4">
-          {userData.map((user) => (
+          {filteredUserData.map((user) => (
             <li
               key={user._id}
               className={`px-2 py-5 border-2 border-solid ${
